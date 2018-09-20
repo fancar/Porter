@@ -8,7 +8,8 @@ import yaml
 try:
   config_yaml = sys.argv[1]
 except IndexError:
-  print('Error! Config not mentioned. Run it like this: ./run_porter.py /path/to/config.yaml')
+  print('Error! Config not specified. Run it this way: ./run_porter.py /path/to/config.yaml')
+  sys.exit()
 
 
 #config_yaml = 'porter/config/config.yaml'
