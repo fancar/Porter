@@ -1,0 +1,53 @@
+# WARNING! TAB spaces do matter !
+devices :
+  # define devices in this section:
+  s1mr :
+    name : s1mr.msk
+    ip : 1.1.1.1
+    protocol : telnet # only telnet in this version
+    port : 23
+
+  s6m9 :
+    name : s6m9.msk
+    ip : 2.2.2.2
+    protocol : telnet
+    port : 23    
+
+  s1m9 :
+    name : s1m9.msk
+    ip : 3.3.3.3
+    protocol : telnet
+    port : 23    
+
+
+templates : 
+  #################
+  - menu_item : Прогнать vlan до вот этого вот...
+    switches :
+      - device : s1mr
+        to_ports : 
+          - Gi6/10
+          - po10 
+          - po1
+          - po2
+      - device : s6m9
+        to_ports : 
+          - Gi6/10
+          - po10 
+  #################
+  - menu_item : или до вот этого...
+    switches :
+      - device : s1mr
+        to_ports : 
+          - Gi6/10
+          - po10 
+      - device : s6m9
+        to_ports : 
+          - Gi6/10
+          - po10           
+          - po1
+          - po2        
+
+
+
+
