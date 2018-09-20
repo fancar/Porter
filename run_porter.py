@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint
 from porter import *
+import sys
 import yaml
 
-config_yaml = 'porter/config/config.yaml'
+try:
+  config_yaml = sys.argv[1]
+except IndexError:
+  print('Error! Config not mentioned. Run it like this: ./run_porter.py /path/to/config.yaml')
+
+
+#config_yaml = 'porter/config/config.yaml'
 
 
 def main():
