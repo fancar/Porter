@@ -1,11 +1,13 @@
-# WARNING! TAB spaces do matter !
+# WARNING! TAB and spaces do matter !
 devices :
   # define devices in this section:
   s1mr :
     name : s1mr.msk
     ip : 1.1.1.1
-    protocol : telnet # only telnet in this version
+    protocol : telnet # only telnet in this version. ssh will be ssoon. I hope
     port : 23
+    user : default # you can use default user/password by using -u and -p options
+    pwd : default
 
   s6m9 :
     name : s6m9.msk

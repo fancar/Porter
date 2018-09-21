@@ -11,8 +11,9 @@ class cisco:
 		makeiprou = tln.make_iprou(iprou)
 		showtime = tln.show_clock()
 	'''
-	def __init__(self,host,username,password):
+	def __init__(self,host,username,password,port=23):
 	 	self.host = host
+	 	self.port = port
 	 	self.username = username
 	 	self.password = password
 	 	remote = tlntlib.telnet(self.host,self.username,self.password)
@@ -25,9 +26,10 @@ class cisco:
 			print("can't telnet!") 
 
 	def sendcmd(self,cmd):		
-		self.remote.connect()
+		self.remote.connect(port=self.port)
 		logger.debug(f'{self.host} : Connected')
 		result = self.remote.cmd(cmd)
+		logger.info(f'{self.host} : Command has sent')
 		if result:
 			logger.warning(f'{self.host} : Answered: {result}')
 		self.remote.disconnect()
@@ -38,11 +40,12 @@ class cisco:
 
 	def sendconfigcmd(self,cmdlist):
 		result = []
-		self.remote.connect()
+		self.remote.connect(port=self.port)
 		self.remote.cmd("config terminal")
 		for c in cmdlist:
 			answer = self.remote.cmd(c)
 			result.append(answer)
+		logger.info(f'{self.host} : Commands have sent')			
 		self.remote.cmd("end")
 		self.remote.disconnect()
 		return result

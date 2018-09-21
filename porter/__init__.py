@@ -1,4 +1,4 @@
-#enforta. Work hard, earn less!
+# enforta. Work hard, earn less!
 # Mamaev Alexandr 2018. First balls, made out of shit.
 # fancarster@gmail.com
 
@@ -6,17 +6,21 @@ from .functions import *
 from .cisco import *
 from .cfg import *
 
-#from pprint import pprint
-
-
 
 def send_commands(settings,cmdlist):
-	''' sends cmdlist to cisco  '''
+	''' sends cmdlist to cisco onlu telnet at the moment '''
 	ip = settings['ip']
 	name = settings['name']
+
+	if not settings['username'] or not settings['password']:
+		logger.error("{} : Commands has NOT been sent (команды не были отправлены)\n \
+			Не был указан пользователь\\пароль для этого свича!".format(settings['ip']))
+		logger.error("{} : Try to upload it manually/ Попробуйте залить команды вручную:\n{}".format(settings['ip'],'\n'.join(cmdlist)))
+		return False
+
 	try:
-		sw = cisco(ip,cisco_user,cisco_password)
-#		sw.showclock()	
+		sw = cisco(ip,settings['username'],settings['password'],port=settings['port'])
+#		sw.showclock()	 #debug
 		result = sw.sendconfigcmd(cmdlist)		
 		logger.info("{} : ({}) | Commands has been sent".format(name,ip))
 		return True
@@ -36,12 +40,16 @@ def send_vlan_to_switch(dic):
 		if c: cmdlist.append(c)
 	return send_commands(dic,cmdlist)
 
-
+def variable_defined(default_value,key,dic):
+	''' returns variable if key in dic and not default'''
+	if key in dic and dic[key] and dic[key].lower() != 'default':
+		result = dic[key]
+	else:
+		result = default_value
+	return result
 
 def	append_vlans(input_li):
 	''' append vlans to all ports of all devices from list of dictionaries'''
-	global vlan_name
-	
 	vlan = setvlanid()
 	vlan_name = setname(' имя влана ',3,20)
 	params = []
@@ -51,13 +59,15 @@ def	append_vlans(input_li):
 		dic = {
 		'name' : my_devices[name]['name'],
 		'ip' : my_devices[name]['ip'],
+		'username' : variable_defined(os.environ['DEFAULT_USERNAME'],'user',my_devices[name]),
+		'password' : variable_defined(os.environ['DEFAULT_PASSWORD'],'pwd',my_devices[name]),
 		'protocol' : my_devices[name]['protocol'],
 		'port' : my_devices[name]['port'],
 		'interfaces' : device['to_ports'],
 		'vlan' : vlan,
 		'case' : vlan_name			
 		}
-		logger.info("Adding VLAN{} ({}) to switch {} ({}) ports:{}...".format(vlan,vlan_name,my_devices[name]['name'],my_devices[name]['ip'],','.join(device['to_ports'])))
+		logger.info("Configuring VLAN{} ({}) to switch {} ({}) ports:{}...".format(vlan,vlan_name,my_devices[name]['name'],my_devices[name]['ip'],','.join(device['to_ports'])))
 		params.append(dic)
 
 	if confirm('добавить влан в порты на эти свичи?'):

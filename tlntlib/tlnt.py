@@ -66,7 +66,7 @@ class telnet(object):
                 elif match.group().count(b'assword'):
                     self.write(self.password + "\n")            
                 # Check for an valid login  ((changed from 2 to 3!))
-                idx, match, text = self.expect(['#', '>', "Login invalid", "Authentication failed"], 3)
+                idx, match, text = self.expect(['#', '>', "Login invalid", "Authentication failed"], 10)
                 if match is None:
                     raise AuthenticationError("Unexpected text post-login", text)
                 elif b"invalid" in match.group() or b"failed" in match.group():
